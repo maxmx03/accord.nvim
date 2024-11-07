@@ -45,6 +45,7 @@ function M:set_extmark(text)
     sign_text = config.sign_text,
     sign_hl_group = config.sign_hl_group,
     virt_text = { { text, 'AccordText' } },
+    ui_watched = true,
   }
   set_extmark(buffer, self.ns_id, line, col, opts)
   record.append {
