@@ -12,9 +12,13 @@ cmd('AccordRecord', function()
 end, {})
 
 cmd('AccordRemember', function()
-  accord:get_extmarks()
+  accord:get_buff_extmarks()
 end, {})
 
 cmd('AccordClean', function()
   accord:clean_extmarks()
+end, {})
+
+cmd('AccordDelete', function()
+  accord:delete_extmark()
 end, {})

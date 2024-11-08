@@ -34,6 +34,10 @@ end
 
 ---@param records records[]
 function M:set(records)
+  if vim.tbl_isempty(records) then
+    self:clean()
+    return
+  end
   local old_data = self:get_all()
   local data = vim.tbl_deep_extend('force', old_data, records)
   local arg1 = vim.json.encode(data)
