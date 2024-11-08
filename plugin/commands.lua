@@ -12,7 +12,7 @@ cmd('AccordRecord', function()
 end, {})
 
 cmd('AccordRemember', function()
-  accord:get_buff_extmarks()
+  accord:set_buff_extmarks()
 end, {})
 
 cmd('AccordClean', function()

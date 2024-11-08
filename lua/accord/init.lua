@@ -39,8 +39,8 @@ function M:set_extmark(text)
   end
   local buffer = api.nvim_get_current_buf()
   local cursor = api.nvim_win_get_cursor(0)
-  local line = cursor[1]
-  local col = cursor[2]
+  local line = cursor[1] - 1
+  local col = 1
   local config = self.config
   ---@type vim.api.keyset.set_extmark
   local opts = {
@@ -49,6 +49,7 @@ function M:set_extmark(text)
     sign_hl_group = config.sign_hl_group,
     virt_text = { { text, 'AccordText' } },
     ui_watched = true,
+    priority = 100,
   }
   local password = fn.expand '%:p'
   set_extmark(buffer, self.ns_id, line, col, opts)
@@ -62,11 +63,14 @@ function M:set_extmark(text)
   }
 end
 
-function M:get_buff_extmarks()
+function M:set_buff_extmarks()
   local password = fn.expand '%:p'
   local records = record:get_pass_records(password)
+  if vim.tbl_isempty(records) then
+    return
+  end
   for _, r in pairs(records) do
-    if r and not vim.tbl_isempty(r) then
+    if api.nvim_buf_is_valid(r.buffer) then
       set_extmark(r.buffer, r.ns_id, r.line, r.col, r.opts)
     end
   end

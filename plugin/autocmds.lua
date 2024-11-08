@@ -6,8 +6,7 @@ au('VimEnter', {
     local Storage = require 'accord.storage'
     local storage = Storage:new { where = 'state', filename = 'accord' }
     local state = require 'accord.state'
-    local records = storage:get_all()
-    state.accords = records
+    state.records = storage:get_all()
   end,
 })
 
@@ -17,6 +16,6 @@ au('VimLeave', {
     local Storage = require 'accord.storage'
     local storage = Storage:new { where = 'state', filename = 'accord' }
     local state = require 'accord.state'
-    storage:set(state.accords)
+    storage:set(state.records)
   end,
 })
