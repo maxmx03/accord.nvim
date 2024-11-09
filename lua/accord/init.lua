@@ -1,7 +1,8 @@
 require 'accord.highlights'
----@class state
+---@type state
 local record = require 'accord.state'
 local log = require 'accord.log'
+---@type storage
 local Storage = require 'accord.storage'
 local api = vim.api
 local fn = vim.fn
@@ -55,7 +56,6 @@ function M:set_extmark(text)
   set_extmark(buffer, self.ns_id, line, col, opts)
   record.append {
     password = password,
-    buffer = buffer,
     ns_id = self.ns_id,
     line = line,
     col = col,
@@ -65,14 +65,14 @@ end
 
 function M:set_buff_extmarks()
   local password = fn.expand '%:p'
-  local current_buffer = api.nvim_get_current_buf()
+  local buffer = api.nvim_get_current_buf()
   local records = record:get_pass_records(password)
   if vim.tbl_isempty(records) then
     return
   end
   for _, r in pairs(records) do
-    if api.nvim_buf_is_valid(r.buffer) and current_buffer == r.buffer then
-      set_extmark(r.buffer, r.ns_id, r.line, r.col, r.opts)
+    if api.nvim_buf_is_valid(buffer) then
+      set_extmark(buffer, r.ns_id, r.line, r.col, r.opts)
     end
   end
 end
@@ -80,14 +80,17 @@ end
 function M:delete_extmark()
   local password = fn.expand '%:p'
   local cursor = api.nvim_win_get_cursor(0)
+  local buffer = api.nvim_get_current_buf()
   ---@type records
   local extmark = record:get_by_pos(cursor, password)
   if vim.tbl_isempty(extmark) then
     log.warning 'extmark not found'
     return
   end
-  del_extmark(extmark.buffer, extmark.ns_id, extmark.opts.id)
-  record:filter(extmark.opts.id, password)
+  del_extmark(buffer, extmark.ns_id, extmark.opts.id)
+  local storage = Storage:new { where = 'state', filename = 'accord' }
+  storage:filter(extmark.opts.id)
+  record:filter(extmark.opts.id)
 end
 
 function M:clean_extmarks()

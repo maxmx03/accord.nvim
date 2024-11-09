@@ -24,19 +24,17 @@ function M:get_by_pos(pos, password)
 end
 
 ---@param id number
----@param password string
-function M:filter(id, password)
-  local records = vim.deepcopy(M.records)
+function M:filter(id)
   M.records = vim.tbl_filter(function(record)
-    return record.opts.id ~= id and record.password == password
-  end, records)
+    return record.opts.id ~= id
+  end, M.records)
 end
 
 ---@param password string
 ---@return records[]
 function M:get_pass_records(password)
   local records = vim.deepcopy(M.records)
-  M.records = vim.tbl_filter(function(record)
+  records = vim.tbl_filter(function(record)
     return record.password == password
   end, records)
   return records

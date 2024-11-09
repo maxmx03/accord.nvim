@@ -26,7 +26,6 @@ end
 
 ---@class records
 ---@field password string
----@field buffer number
 ---@field ns_id number
 ---@field line number
 ---@field col number
@@ -37,10 +36,8 @@ function M:set(records)
   if vim.tbl_isempty(records) then
     return
   end
-  local old_data = self:get_all()
-  local data = vim.tbl_deep_extend('force', old_data, records)
-  local arg1 = vim.json.encode(data)
-  local ok, err = pcall(fn.writefile, { arg1 }, self.location)
+  local data = vim.json.encode(records)
+  local ok, err = pcall(fn.writefile, { data }, self.location)
   if not ok then
     log.error(err)
   end
@@ -60,6 +57,18 @@ function M:get_all()
   end
   data = vim.json.decode(data[1])
   return data
+end
+
+---@param id number
+function M:filter(id)
+  local data = vim.tbl_filter(function(record)
+    return record.opts.id ~= id
+  end, self:get_all())
+  if vim.tbl_isempty(data) then
+    self:clean()
+    return
+  end
+  self:set(data)
 end
 
 ---@param password string
