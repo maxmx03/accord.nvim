@@ -35,7 +35,6 @@ end
 ---@param records records[]
 function M:set(records)
   if vim.tbl_isempty(records) then
-    self:clean()
     return
   end
   local old_data = self:get_all()
