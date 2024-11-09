@@ -35,7 +35,7 @@ describe('storage', function()
   end)
 
   test('filter', function()
-    storage:filter(id, password)
+    storage:filter(id)
     local lines = storage:get_all()
     assert.are_same(record2, lines[1])
   end)

@@ -50,7 +50,6 @@ function M:set_extmark(text)
     sign_hl_group = config.sign_hl_group,
     virt_text = { { text, 'AccordText' } },
     ui_watched = true,
-    priority = 100,
   }
   local password = fn.expand '%:p'
   set_extmark(buffer, self.ns_id, line, col, opts)

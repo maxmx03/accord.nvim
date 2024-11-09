@@ -24,6 +24,13 @@ function M:new(config)
   return t
 end
 
+function M:create_file()
+  local ok, _ = pcall(fn.readfile, self.location)
+  if not ok then
+    fn.writefile({}, self.location)
+  end
+end
+
 ---@class records
 ---@field password string
 ---@field ns_id number
@@ -50,7 +57,7 @@ end
 function M:get_all()
   local ok, data = pcall(fn.readfile, self.location)
   if not ok then
-    log.error "can't readfile"
+    self:create_file()
   end
   if data[1] == nil then
     return {}
@@ -76,7 +83,7 @@ end
 function M:get_by_password(password)
   local ok, data = pcall(fn.readfile, self.location)
   if not ok then
-    log.error "can't readfile"
+    self:create_file()
   end
   data = vim.json.decode(data[1])
   local records = vim.tbl_filter(function(value)
